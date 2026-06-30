@@ -77,5 +77,5 @@ jobs:
           file: "Dockerfile"
           push: true
           tags: |
-             acrlab2026.azurecr.io/fastapi:${{ github.sha }}
-             acrlab2026.azurecr.io/fastapi:latest
+             labopsacr2025.azurecr.io/fastapi:${{ github.sha }}
+             labopsacr2025.azurecr.io/fastapi:latest

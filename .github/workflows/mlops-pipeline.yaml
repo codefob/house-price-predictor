@@ -13,8 +13,8 @@ permissions:
   contents: read
 
 env:
-  ACR_NAME: acrlab2026
-  ACR_LOGIN_SERVER: acrlab2026.azurecr.io
+  ACR_NAME: labopsacr2025
+  ACR_LOGIN_SERVER: labopsacr2025.azurecr.io
   IMAGE_NAME: house-price-model
 
 jobs:
