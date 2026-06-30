@@ -118,7 +118,7 @@ jobs:
         run: |
           docker stop mlflow-server || true
           docker rm mlflow-server || true
-          
+
   terraform-aks:
     needs: model-training
     runs-on: ubuntu-latest
@@ -151,12 +151,24 @@ jobs:
 
       - name: Terraform Init
         working-directory: terraform
+        env:
+          TF_STATE_RESOURCE_GROUP: ${{ vars.TF_STATE_RESOURCE_GROUP }}
+          TF_STATE_STORAGE_ACCOUNT: ${{ vars.TF_STATE_STORAGE_ACCOUNT }}
+          TF_STATE_CONTAINER: ${{ vars.TF_STATE_CONTAINER }}
+          TF_STATE_KEY: ${{ vars.TF_STATE_KEY }}
         run: |
+          echo "Validating backend variables..."
+
+          test -n "$TF_STATE_RESOURCE_GROUP" || (echo "Missing TF_STATE_RESOURCE_GROUP" && exit 1)
+          test -n "$TF_STATE_STORAGE_ACCOUNT" || (echo "Missing TF_STATE_STORAGE_ACCOUNT" && exit 1)
+          test -n "$TF_STATE_CONTAINER" || (echo "Missing TF_STATE_CONTAINER" && exit 1)
+          test -n "$TF_STATE_KEY" || (echo "Missing TF_STATE_KEY" && exit 1)
+
           terraform init \
-            -backend-config="resource_group_name=${{ vars.TF_STATE_RESOURCE_GROUP }}" \
-            -backend-config="storage_account_name=${{ vars.TF_STATE_STORAGE_ACCOUNT }}" \
-            -backend-config="container_name=${{ vars.TF_STATE_CONTAINER }}" \
-            -backend-config="key=${{ vars.TF_STATE_KEY }}" \
+            -backend-config="resource_group_name=$TF_STATE_RESOURCE_GROUP" \
+            -backend-config="storage_account_name=$TF_STATE_STORAGE_ACCOUNT" \
+            -backend-config="container_name=$TF_STATE_CONTAINER" \
+            -backend-config="key=$TF_STATE_KEY" \
             -backend-config="use_azuread_auth=true" \
             -backend-config="use_oidc=true" \
             -backend-config="client_id=${{ secrets.AZURE_CLIENT_ID }}" \

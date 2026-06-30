@@ -1,5 +1,5 @@
-variable "create_aks" {
-  type    = bool
+#variable "create_aks" {
+ type    = bool
   default = true
 }
 
