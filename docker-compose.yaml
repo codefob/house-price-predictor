@@ -1,14 +1,14 @@
 services: 
   fastapi: 
-    image: initcron/fastapi:dev  
+    image: codefob/fastapi:dev  
     build: 
       context: .
       dockerfile: Dockerfile
     ports: 
-      - 8888:8000
+      - 8889:8000
 
   streamlit: 
-    image: initcron/streamlit:dev
+    image: codefob/streamlit:dev
     build:
       context: ./streamlit_app
       dockerfile: Dockerfile
