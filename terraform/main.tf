@@ -1,7 +1,7 @@
 #variable "create_aks" {
- type    = bool
-  default = true
-}
+# type    = bool
+#  default = true
+#}
 
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
