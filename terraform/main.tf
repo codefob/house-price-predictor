@@ -3,11 +3,14 @@
 #  default = true
 #}
 
-resource "azurerm_resource_group" "rg" {
-  name     = var.resource_group_name
-  location = var.location
-}
+#resource "azurerm_resource_group" "rg" {
+#  name     = var.resource_group_name
+#  location = var.location
+#}
 
+data "azurerm_resource_group" "rg" {
+  name = var.resource_group_name
+}
 data "azurerm_container_registry" "acr" {
   name                = var.acr_name
   resource_group_name = var.acr_resource_group_name
@@ -22,8 +25,8 @@ data "azurerm_kubernetes_cluster" "existing_aks" {
 resource "azurerm_kubernetes_cluster" "aks" {
   count               = var.create_aks ? 1 : 0
   name                = var.aks_name
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
   dns_prefix          = var.aks_dns_prefix
 
   oidc_issuer_enabled       = true
