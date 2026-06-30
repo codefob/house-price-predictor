@@ -5,3 +5,126 @@ server:
 configs:
   params:
     server.insecure: true
+
+extraObjects:
+  # 1. Install KEDA because deployment/kubernetes/fastapi-scaledobject.yaml uses ScaledObject
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: keda
+      namespace: argocd
+      annotations:
+        argocd.argoproj.io/sync-wave: "0"
+    spec:
+      project: default
+      source:
+        repoURL: https://kedacore.github.io/charts
+        chart: keda
+        targetRevision: "2.16.1"
+        helm:
+          releaseName: keda
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: keda
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+
+  # 2. Install Prometheus and Grafana
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: monitoring-stack
+      namespace: argocd
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: default
+      source:
+        repoURL: https://prometheus-community.github.io/helm-charts
+        chart: kube-prometheus-stack
+        targetRevision: "69.8.2"
+        helm:
+          releaseName: monitoring
+          values: |
+            grafana:
+              enabled: true
+              adminUser: admin
+              adminPassword: admin123
+              service:
+                type: LoadBalancer
+
+            prometheus:
+              prometheusSpec:
+                retention: 7d
+                serviceMonitorSelectorNilUsesHelmValues: false
+                podMonitorSelectorNilUsesHelmValues: false
+
+            kube-state-metrics:
+              enabled: true
+
+            prometheus-node-exporter:
+              enabled: true
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: monitoring
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+
+  # 3. Deploy FastAPI and Streamlit from existing deployment/kubernetes folder
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: house-price-app
+      namespace: argocd
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/codefob/house-price-predictor.git
+        targetRevision: main
+        path: deployment/kubernetes
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: default
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+
+  # 4. Deploy VPA and ServiceMonitor from existing deployment/monitoring folder
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: house-price-monitoring
+      namespace: argocd
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/codefob/house-price-predictor.git
+        targetRevision: main
+        path: deployment/monitoring
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: default
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - ServerSideApply=true

@@ -18,7 +18,7 @@ spec:
         app: model
     spec:
       containers:
-      - image: initcron/house-price-model:latest
+      - image: labopsacr2025.azurecr.io/house-price-model:latest
         name: house-price-model
         ports:
         - containerPort: 8000

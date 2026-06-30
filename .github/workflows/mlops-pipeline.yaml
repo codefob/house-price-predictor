@@ -237,7 +237,7 @@ jobs:
         working-directory: terraform
         run: terraform apply -auto-approve tfplan
 
-  argocd-deploy:
+  Argocd-deploy:
     needs: Deploy_to_AKS_with_Terraform
     runs-on: ubuntu-latest
     env:
@@ -248,5 +248,4 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-  
+grep -R "image:" deployment/kubernetes/
