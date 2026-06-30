@@ -55,6 +55,9 @@ crash.*.log
 # Terraform backend config
 backend-config/*.tfbackend
 
+# Terraform backend config with real storage account details
+terraform/backend-config/*.tfbackend
+
 # Local override files
 override.tf
 override.tf.json
