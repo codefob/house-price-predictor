@@ -1,187 +1,223 @@
-# 🏠 House Price Predictor – An MLOps Learning Project
+House Price Predictor – MLOps on AKS
 
-Welcome to the **House Price Predictor** project! This is a real-world, end-to-end MLOps use case designed to help you master the art of building and operationalizing machine learning pipelines.
+This project shows how to build and deploy a machine learning application on Azure Kubernetes Service (AKS) using MLOps, Terraform, GitHub Actions, Argo CD, Azure Container Registry, Prometheus, and Grafana.
 
-You'll start from raw data and move through data preprocessing, feature engineering, experimentation, model tracking with MLflow, and optionally using Jupyter for exploration – all while applying industry-grade tooling.
+The application predicts house prices using a trained ML model. It includes a FastAPI backend and a Streamlit UI.
 
-> 🚀 **Want to master MLOps from scratch?**  
-Check out the [MLOps Bootcamp at School of DevOps](https://schoolofdevops.com) to level up your skills.
+Project Flow
+Data Processing
+      ↓
+Model Training
+      ↓
+Docker Build and Push to ACR
+      ↓
+AKS Deployment using Terraform
+      ↓
+Argo CD GitOps Deployment
+      ↓
+Monitoring with Prometheus and Grafana
+Main Components
+Component	Purpose
+Python	Data processing and model training
+FastAPI	Serves the ML model as an API
+Streamlit	Web UI for users
+Docker	Packages the application
+Azure Container Registry	Stores Docker images
+AKS	Runs the application containers
+Terraform	Creates and manages AKS infrastructure
+GitHub Actions	Automates build and deployment
+Argo CD	Deploys Kubernetes manifests using GitOps
+Prometheus / Grafana	Monitoring and dashboards
+Azure Resources
+Resource Group: lab2026
+AKS Cluster: ai-workload
+ACR Name: labopsACR2025
+ACR Login Server: labopsacr2025.azurecr.io
 
----
+Docker images:
 
-## 📦 Project Structure
-
-```
+labopsacr2025.azurecr.io/house-price-model:latest
+labopsacr2025.azurecr.io/house-price-streamlit:latest
+Repository Structure
 house-price-predictor/
-├── configs/                # YAML-based configuration for models
-├── data/                   # Raw and processed datasets
+├── data/                  # Raw and processed data
+├── notebooks/             # ML notebooks
+├── src/                   # Python source code
+│   ├── api/               # FastAPI app
+│   ├── data/              # Data processing
+│   ├── features/          # Feature engineering
+│   └── models/            # Model training
+├── streamlit_app/         # Streamlit UI
 ├── deployment/
-│   └── mlflow/             # Docker Compose setup for MLflow
-├── models/                 # Trained models and preprocessors
-├── notebooks/              # Optional Jupyter notebooks for experimentation
-├── src/
-│   ├── data/               # Data cleaning and preprocessing scripts
-│   ├── features/           # Feature engineering pipeline
-│   ├── models/             # Model training and evaluation
-├── requirements.txt        # Python dependencies
-└── README.md               # You’re here!
-```
+│   ├── kubernetes/        # App Kubernetes manifests
+│   ├── monitoring/        # Monitoring manifests
+│   └── mlflow/            # MLflow local setup
+├── terraform/             # AKS and Argo CD infrastructure
+├── Dockerfile             # FastAPI image
+└── README.md
+Run Locally
 
----
+Create virtual environment:
 
-## 🛠️ Setting up Learning/Development Environment
+python -m venv .venv
+source .venv/bin/activate
 
-To begin, ensure the following tools are installed on your system:
+Install dependencies:
 
-- [Python 3.11](https://www.python.org/downloads/)
-- [Git](https://git-scm.com/)
-- [Visual Studio Code](https://code.visualstudio.com/) or your preferred editor
-- [UV – Python package and environment manager](https://github.com/astral-sh/uv)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) **or** [Podman Desktop](https://podman-desktop.io/)
+pip install -r requirements.txt
 
----
+Run FastAPI:
 
-## 🚀 Preparing Your Environment
+uvicorn src.api.main:app --host 0.0.0.0 --port 8000
 
-1. **Fork this repo** on GitHub.
+Test API:
 
-2. **Clone your forked copy:**
+curl http://localhost:8000/health
 
-   ```bash
-   # Replace xxxxxx with your GitHub username or org
-   git clone https://github.com/xxxxxx/house-price-predictor.git
-   cd house-price-predictor
-   ```
+Run Streamlit:
 
-3. **Setup Python Virtual Environment using UV:**
+cd streamlit_app
+streamlit run app.py
 
-   ```bash
-   uv venv --python python3.11
-   source .venv/bin/activate
-   ```
+Open:
 
-4. **Install dependencies:**
+http://localhost:8501
+Build Docker Images
 
-   ```bash
-   uv pip install -r requirements.txt
-   ```
+FastAPI image:
 
----
+docker build -t house-price-model:local .
 
-## 📊 Setup MLflow for Experiment Tracking
+Streamlit image:
 
-To track experiments and model runs:
+docker build -t house-price-streamlit:local ./streamlit_app
+GitHub Actions Pipeline
 
-```bash
-cd deployment/mlflow
-docker compose -f mlflow-docker-compose.yml up -d
-docker compose ps
-```
+The pipeline runs automatically on push to main.
 
-> 🐧 **Using Podman?** Use this instead:
+Main jobs:
 
-```bash
-podman compose -f mlflow-docker-compose.yml up -d
-podman compose ps
-```
+data-processing
+model-training
+Docker_build-and-publish_ACR
+Deploy_to_AKS_with_Terraform
+argocd-deploy
 
-Access the MLflow UI at [http://localhost:5555](http://localhost:5555)
+The pipeline:
 
----
+Processes data
+Trains the model
+Builds Docker images
+Pushes images to ACR
+Deploys AKS using Terraform
+Installs Argo CD
+Deploys FastAPI, Streamlit, Prometheus, and Grafana
+Terraform
 
-## 📒 Using JupyterLab (Optional)
+Terraform is used to manage:
 
-If you prefer an interactive experience, launch JupyterLab with:
+AKS cluster
+Node pools
+ACR pull permission
+Cluster autoscaler
+Argo CD installation
+Argo CD application bootstrap
 
-```bash
-uv python -m jupyterlab
-# or
-python -m jupyterlab
-```
+Run locally:
 
----
+cd terraform
+terraform init -backend=false -upgrade
+terraform fmt
+terraform validate
+Argo CD
 
-## 🔁 Model Workflow
+Argo CD deploys the application from GitHub to AKS.
 
-### 🧹 Step 1: Data Processing
+Check Argo CD:
 
-Clean and preprocess the raw housing dataset:
+kubectl get pods -n argocd
+kubectl get svc -n argocd
+kubectl get applications -n argocd
 
-```bash
-python src/data/run_processing.py   --input data/raw/house_data.csv   --output data/processed/cleaned_house_data.csv
-```
+Get Argo CD password:
 
----
+kubectl get secret argocd-initial-admin-secret \
+  -n argocd \
+  -o jsonpath="{.data.password}" | base64 -d; echo
 
-### 🧠 Step 2: Feature Engineering
+Access Argo CD:
 
-Apply transformations and generate features:
+http://<argocd-external-ip>
 
-```bash
-python src/features/engineer.py   --input data/processed/cleaned_house_data.csv   --output data/processed/featured_house_data.csv   --preprocessor models/trained/preprocessor.pkl
-```
+Login:
 
----
+Username: admin
+Password: <password from command>
+Application Access
 
-### 📈 Step 3: Modeling & Experimentation
+Check pods:
 
-Train your model and log everything to MLflow:
+kubectl get pods -n default
 
-```bash
-python src/models/train_model.py   --config configs/model_config.yaml   --data data/processed/featured_house_data.csv   --models-dir models   --mlflow-tracking-uri http://localhost:5555
-```
+Check services:
 
----
+kubectl get svc -n default
 
+Access Streamlit:
 
-## Building FastAPI and Streamlit 
+kubectl get svc streamlit -n default
 
-The code for both the apps are available in `src/api` and `streamlit_app` already. To build and launch these apps 
+Open:
 
-  * Add a  `Dockerfile` in the root of the source code for building FastAPI  
-  * Add `streamlit_app/Dockerfile` to package and build the Streamlit app  
-  * Add `docker-compose.yaml` in the root path to launch both these apps. be sure to provide `API_URL=http://fastapi:8000` in the streamlit app's environment. 
+http://<streamlit-external-ip>
+Monitoring
 
+Prometheus and Grafana are deployed for monitoring.
 
-Once you have launched both the apps, you should be able to access streamlit web ui and make predictions. 
+Check monitoring:
 
-You could also test predictions with FastAPI directly using 
+kubectl get pods -n monitoring
+kubectl get svc -n monitoring
 
-```
-curl -X POST "http://localhost:8000/predict" \
--H "Content-Type: application/json" \
--d '{
-  "sqft": 1500,
-  "bedrooms": 3,
-  "bathrooms": 2,
-  "location": "suburban",
-  "year_built": 2000,
-  "condition": fair
-}'
+Access Grafana:
 
-```
+kubectl get svc -n monitoring
 
-Be sure to replace `http://localhost:8000/predict` with actual endpoint based on where its running. 
+Open:
 
+http://<grafana-external-ip>
 
-## 🧠 Learn More About MLOps
+Default login:
 
-This project is part of the [**MLOps Bootcamp**](https://schoolofdevops.com) at School of DevOps, where you'll learn how to:
+Username: admin
+Password: password-here
+Troubleshooting
+ImagePullBackOff
 
-- Build and track ML pipelines
-- Containerize and deploy models
-- Automate training workflows using GitHub Actions or Argo Workflows
-- Apply DevOps principles to Machine Learning systems
+Check pod details:
 
-🔗 [Get Started with MLOps →](https://schoolofdevops.com)
+kubectl describe pod <pod-name> -n default
 
----
+Verify ACR images:
 
-## 🤝 Contributing
+az acr repository list --name labopsACR2025 -o table
 
-We welcome contributions, issues, and suggestions to make this project even better. Feel free to fork, explore, and raise PRs!
+Expected repositories:
 
----
+house-price-model
+house-price-streamlit
+Argo CD Sync Issue
+kubectl get applications -n argocd
+kubectl describe application <application-name> -n argocd
+Check Autoscaling
+kubectl get hpa -A
+kubectl get vpa -A
+kubectl get scaledobject -A
+kubectl get nodes
+Project Goal
 
-Happy Learning!  
-— Team **School of DevOps**
+The goal of this project is to demonstrate a simple, practical MLOps workflow on Azure:
+
+ML model → Docker image → ACR → AKS → Argo CD → Monitoring
+
+This project is useful for learning how cloud, DevOps, Kubernetes, and MLOps work together in a real deployment workflow.
