@@ -1,4 +1,4 @@
-# House Price Predictor – MLOps on Azure Kubernetes Service
+# Building and Deploying AI Workloads on Azure Kubernetes Service with MLOps
 
 ![MLOps](https://img.shields.io/badge/MLOps-AKS-blue)
 ![Terraform](https://img.shields.io/badge/IaC-Terraform-purple)
