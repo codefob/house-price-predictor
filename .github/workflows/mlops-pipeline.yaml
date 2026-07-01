@@ -15,7 +15,8 @@ permissions:
 env:
   ACR_NAME: labopsacr2025
   ACR_LOGIN_SERVER: labopsacr2025.azurecr.io
-  IMAGE_NAME: house-price-model
+  API_IMAGE_NAME: house-price-model
+  STREAMLIT_IMAGE_NAME: house-price-streamlit
 
 jobs:
   data-processing:
@@ -118,6 +119,7 @@ jobs:
         run: |
           docker stop mlflow-server || true
           docker rm mlflow-server || true
+  #build and publish docker image to Azure Container Registry        
   Docker_build-and-publish_ACR:
     needs: model-training
     runs-on: ubuntu-latest
@@ -159,9 +161,20 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-            ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.ACR_LOGIN_SERVER }}/${{ env.API_IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.ACR_LOGIN_SERVER }}/${{ env.API_IMAGE_NAME }}:latest
           platforms: linux/amd64,linux/arm64
+          
+      - name: Build and push Streamlit image to ACR
+        uses: docker/build-push-action@v6
+        with:
+          context: ./streamlit_app
+          file: ./streamlit_app/Dockerfile
+          push: true
+          tags: |
+            ${{ env.ACR_LOGIN_SERVER }}/${{ env.STREAMLIT_IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.ACR_LOGIN_SERVER }}/${{ env.STREAMLIT_IMAGE_NAME }}:latest
+          platforms: linux/amd64
 
   Deploy_to_AKS_with_Terraform:
     needs: Docker_build-and-publish_ACR
