@@ -35,7 +35,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
   default_node_pool {
     name                = "sysnp"
-    vm_size             = "Standard_DS2_v2"
+    vm_size             = "Standard_D2as_v5"
     enable_auto_scaling = true
     min_count           = 1
     max_count           = 2
@@ -66,7 +66,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "userpool" {
   count                 = var.create_aks ? 1 : 0
   name                  = "usernp01"
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks[0].id
-  vm_size               = "Standard_DS2_v2"
+  vm_size               = "Standard_D2as_v5"
   mode                  = "User"
 
   enable_auto_scaling = true
