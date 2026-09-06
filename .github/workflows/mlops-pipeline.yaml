@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 env:
-  ACR_NAME: acrlabops2026
+  ACR_NAME: labopsacr2026
   ACR_LOGIN_SERVER: labopsacr2026.azurecr.io
   API_IMAGE_NAME: house-price-model
   STREAMLIT_IMAGE_NAME: house-price-streamlit
