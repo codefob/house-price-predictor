@@ -7,7 +7,7 @@ variable "location" {
 variable "resource_group_name" {
   description = "Resource group name"
   type        = string
-  default     = "dfwlab2026"
+  default     = "lab2026"
 }
 
 variable "aks_name" {
