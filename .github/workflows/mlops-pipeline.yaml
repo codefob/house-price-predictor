@@ -242,7 +242,7 @@ jobs:
           terraform plan \
             -var="create_aks=true" \
              -var="acr_name=labopsACR2026" \
-             -var="acr_resource_group_name=labopsACR2026" \
+             -var="acr_resource_group_name=lab2026
             -out=tfplan
 
       - name: Terraform Apply

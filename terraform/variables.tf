@@ -31,7 +31,7 @@ variable "create_aks" {
 variable "acr_name" {
   description = "Existing Azure Container Registry name"
   type        = string
-  default     = "labopsACR2026"
+  default     = "labopsacr2026"
 }
 
 variable "acr_resource_group_name" {
