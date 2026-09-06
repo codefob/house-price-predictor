@@ -11,8 +11,8 @@ permissions:
   contents: read
 
 env:
-  ACR_NAME: labopsacr2025
-  ACR_LOGIN_SERVER: labopsacr2025.azurecr.io
+  ACR_NAME: labopsacr2026
+  ACR_LOGIN_SERVER: labopsacr2026.azurecr.io
   IMAGE_NAME: streamlit
 
 jobs:

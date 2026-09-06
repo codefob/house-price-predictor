@@ -13,8 +13,8 @@ permissions:
   contents: read
 
 env:
-  ACR_NAME: labopsacr2025
-  ACR_LOGIN_SERVER: labopsacr2025.azurecr.io
+  ACR_NAME: acrlabops2026
+  ACR_LOGIN_SERVER: labopsacr2026.azurecr.io
   API_IMAGE_NAME: house-price-model
   STREAMLIT_IMAGE_NAME: house-price-streamlit
 
@@ -241,8 +241,8 @@ jobs:
         run: |
           terraform plan \
             -var="create_aks=true" \
-             -var="acr_name=labopsACR2025" \
-             -var="acr_resource_group_name=lab2025" \
+             -var="acr_name=labopsACR2026" \
+             -var="acr_resource_group_name=labopsACR2026" \
             -out=tfplan
 
       - name: Terraform Apply
