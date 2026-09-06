@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/33dde19574f9459d8e3d4de40d3bbae7/artifacts
+end_time: 1788655434813
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 33dde19574f9459d8e3d4de40d3bbae7
+run_name: final_training
+run_uuid: 33dde19574f9459d8e3d4de40d3bbae7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1788655433337
+status: 3
+tags: []
+user_id: shiva
