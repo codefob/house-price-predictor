@@ -38,7 +38,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     vm_size             = "Standard_DS2_v2"
     enable_auto_scaling = true
     min_count           = 1
-    max_count           = 3
+    max_count           = 2
   }
 
   identity {
@@ -71,7 +71,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "userpool" {
 
   enable_auto_scaling = true
   min_count           = 1
-  max_count           = 5
+  max_count           = 2
 
   orchestrator_version = azurerm_kubernetes_cluster.aks[0].kubernetes_version
 }

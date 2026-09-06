@@ -7,7 +7,7 @@ variable "location" {
 variable "resource_group_name" {
   description = "Resource group name"
   type        = string
-  default     = "lab2026"
+  default     = "dfwlab2026"
 }
 
 variable "aks_name" {
@@ -31,11 +31,11 @@ variable "create_aks" {
 variable "acr_name" {
   description = "Existing Azure Container Registry name"
   type        = string
-  default     = "labopsACR2025"
+  default     = "labopsACR2026"
 }
 
 variable "acr_resource_group_name" {
   description = "Resource group where existing ACR is located"
   type        = string
-  default     = "lab2025"
+  default     = "lab2026"
 }

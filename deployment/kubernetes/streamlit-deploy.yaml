@@ -18,7 +18,7 @@ spec:
         app: streamlit
     spec:
       containers:
-      - image: labopsacr2025.azurecr.io/house-price-streamlit:latest
+      - image: labopsacr2026.azurecr.io/house-price-streamlit:latest
         name: streamlit
         ports:
         - containerPort: 8501
