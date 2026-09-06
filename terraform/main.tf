@@ -108,11 +108,13 @@ locals {
   )
 }
 
+/*
 resource "azurerm_role_assignment" "acr_pull" {
   principal_id         = local.kubelet_object_id
   role_definition_name = "AcrPull"
   scope                = data.azurerm_container_registry.acr.id
 }
+*/
 
 resource "kubernetes_namespace" "argocd" {
   metadata {
