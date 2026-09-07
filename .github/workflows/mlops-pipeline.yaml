@@ -235,6 +235,15 @@ jobs:
       - name: Terraform Validate
         working-directory: terraform
         run: terraform validate
+      
+      - name: Import Existing ACR Pull Assignment
+        working-directory: terraform
+        run: |
+          KUBELET_OBJECT_ID=$(az aks show \
+            --resource-group dfwlab2026 \
+            --name ai-workload \
+            --query identityProfile.kubeletidentity.objectId \
+            -o tsv)
 
       - name: Terraform Plan
         working-directory: terraform
